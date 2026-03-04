@@ -1,0 +1,26 @@
+{
+  "name": "browser-devtools",
+  "version": "1.0.0",
+  "description": "Playwright-powered browser automation and Node.js backend debugging via MCP. Browser: navigate, screenshot, a11y, Web Vitals, mock APIs, React/Figma. Node: connect to process (PID/Docker/port), tracepoints, logpoints, exceptionpoints, run JS in process.",
+  "author": {
+    "name": "Serkan Ozal",
+    "email": "serkanozal86@gmail.com"
+  },
+  "homepage": "https://www.browser-devtools.com",
+  "repository": "https://github.com/serkan-ozal/browser-devtools-cursor",
+  "license": "MIT",
+  "keywords": [
+    "browser",
+    "devtools",
+    "playwright",
+    "mcp",
+    "automation",
+    "testing",
+    "accessibility",
+    "performance",
+    "debugging",
+    "node",
+    "nodejs",
+    "backend"
+  ]
+}

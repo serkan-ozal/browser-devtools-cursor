@@ -1,0 +1,29 @@
+---
+description: Use Browser DevTools MCP for browser automation, testing, a11y, performance, and in-browser debugging. Prefer MCP tools over CLI or custom scripts when this plugin is installed.
+alwaysApply: false
+globs: []
+---
+
+# Browser automation and testing
+
+When the user asks to **navigate**, **screenshot**, **test a web page**, **audit accessibility**, **measure performance**, **mock APIs**, **inspect React components**, **compare with Figma**, or **debug JavaScript in the browser**, use the **browser-devtools** MCP server provided by this plugin. Do not suggest running `browser-devtools-cli` in the shell unless the user explicitly wants CLI or the MCP server is unavailable.
+
+## Which tools to use
+
+- **Navigation** – Go to URL, back, forward, reload.
+- **Content** – Screenshots (region/full-page, format), PDF, get HTML or text.
+- **Interaction** – Click, fill, select, hover, scroll, drag, press key; use refs (e.g. from ARIA snapshot) when the UI is dynamic.
+- **Accessibility (a11y)** – ARIA snapshot (compact, ref-based), AX tree snapshot (detailed roles/names/states). Use ARIA snapshot before interactions when you need stable element refs.
+- **Observability (o11y)** – Web Vitals, console messages, HTTP requests, trace ID get/set/new.
+- **Stub** – Intercept and mock HTTP responses.
+- **Run** – Execute JavaScript in browser or sandbox.
+- **React** – Get component for element, element for component.
+- **Figma** – Compare page with design (file key + node ID).
+- **Debug** – Tracepoints, logpoints, exceptionpoints, watch expressions; get/clear probe snapshots.
+
+## Good practices
+
+1. **Stable selectors** – Prefer taking an ARIA (or AX) snapshot first and using the returned refs for click/fill/select instead of fragile CSS selectors when the page structure may change.
+2. **Timing** – After navigation or actions that trigger network/animations, use sync/wait tools (e.g. wait for network idle) or a short delay before taking screenshots or reading content.
+3. **Screenshots** – Use annotated screenshots (with ref labels) when you need to refer to specific elements in follow-up steps or in explanations to the user.
+4. **Errors** – If a tool fails (e.g. element not found), re-take a snapshot to get current refs or check the page state before retrying.

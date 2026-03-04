@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "browser-devtools": {
+      "command": "npx",
+      "args": ["-y", "browser-devtools-mcp"],
+      "env": {
+        "PLATFORM": "browser"
+      }
+    },
+    "node-devtools": {
+      "command": "npx",
+      "args": ["-y", "browser-devtools-mcp"],
+      "env": {
+        "PLATFORM": "node"
+      }
+    }
+  }
+}

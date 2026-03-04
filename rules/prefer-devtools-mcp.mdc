@@ -1,0 +1,20 @@
+---
+description: Prefer Browser DevTools and Node DevTools MCP tools over shell commands (browser-devtools-cli, node-devtools-cli) when the browser-devtools plugin is installed.
+alwaysApply: false
+globs: []
+---
+
+# Prefer DevTools MCP over CLI
+
+This workspace has the **browser-devtools** Cursor plugin installed, which provides two MCP servers:
+
+- **browser-devtools** – Browser automation, screenshots, a11y, Web Vitals, stubbing, React/Figma, in-browser debug.
+- **node-devtools** – Node.js backend debugging: connect to process, tracepoints, logpoints, exceptionpoints, run JS in process.
+
+When the user’s request involves any of these tasks, **use the corresponding MCP tools** instead of suggesting or running:
+
+- `browser-devtools-cli ...`
+- `node-devtools-cli ...`
+- Or other external scripts that duplicate this functionality.
+
+Only suggest CLI or shell commands if the user explicitly asks for a script, for CI/local automation outside Cursor, or if the MCP servers are not available (e.g. not installed or failing to start).
