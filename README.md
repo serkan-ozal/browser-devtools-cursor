@@ -43,28 +43,6 @@ Cursor plugin that adds **Browser DevTools MCP** and **Node DevTools MCP** to yo
 
 After installation, two MCP servers are available (same npm package, different platform): **browser-devtools** (default) and **node-devtools** (`PLATFORM=node`). Cursor starts them via `npx` when needed; no separate install required. Ask the AI to e.g. “navigate to …”, “take a screenshot”, or “debug this Node server” to use the tools.
 
-## Plugin structure
-
-```
-browser-devtools-cursor/
-├── .cursor-plugin/
-│   └── plugin.json       # Plugin manifest
-├── .mcp.json             # MCP servers (browser-devtools + node-devtools)
-├── rules/                # Cursor rules
-│   ├── browser-automation.mdc   # When/how to use browser-devtools MCP
-│   ├── node-debugging.mdc      # When/how to use node-devtools MCP
-│   └── prefer-devtools-mcp.mdc # Prefer MCP over CLI
-├── skills/               # Agent skills (when to use which tools)
-│   ├── browser-automation/
-│   ├── browser-testing/
-│   ├── accessibility-audit/
-│   ├── performance-audit/
-│   ├── observability/
-│   ├── visual-testing/
-│   └── node-debugging/
-└── README.md
-```
-
 ## Related
 
 - **This plugin (repo):** [browser-devtools-cursor](https://github.com/serkan-ozal/browser-devtools-cursor)
