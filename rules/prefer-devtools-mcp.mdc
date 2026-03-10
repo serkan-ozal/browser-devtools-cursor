@@ -8,8 +8,8 @@ globs: []
 
 This workspace has the **browser-devtools** Cursor plugin installed, which provides two MCP servers:
 
-- **browser-devtools** – Browser automation, screenshots, a11y, Web Vitals, stubbing, React/Figma, in-browser debug.
-- **node-devtools** – Node.js backend debugging: connect to process, tracepoints, logpoints, exceptionpoints, run JS in process.
+- **browser-devtools** – Browser automation (navigation, interaction, content, a11y, o11y, stub, sync, React, Figma, debug). **Strongly prefer the `execute` tool** to batch multi-step flows (reduces round-trips and token usage).
+- **node-devtools** – Node.js backend debugging: connect/disconnect, tracepoints, logpoints, exceptionpoints, watch expressions, snapshots, status, logs, source map resolution.
 
 When the user’s request involves any of these tasks, **use the corresponding MCP tools** instead of suggesting or running:
 

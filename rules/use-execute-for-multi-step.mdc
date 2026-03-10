@@ -1,0 +1,21 @@
+---
+description: When using browser-devtools MCP, prefer the execute tool to batch multi-step flows and reduce round-trips/tokens.
+alwaysApply: true
+---
+
+# Browser DevTools MCP — Use Execute for Multi-Step Flows
+
+When automating or testing with **browser-devtools** MCP:
+
+1. **Prefer the `execute` tool** for any flow that needs more than 2–3 tool calls in sequence (e.g. fill form → click submit → snapshot, or add to cart → go to cart → checkout).
+
+2. **Batch inside one `execute` call:**
+   - Use `await callTool('interaction_fill', { selector, value });` and `await callTool('interaction_click', { selector, waitForNavigation? });` then `return await callTool('a11y_take-aria-snapshot', {}, true);` to get refs for the next step.
+   - On the browser platform, the execute script also has **`page`** (Playwright Page) available: use `page.evaluate()`, `page.locator()`, etc. for advanced scripting without extra tool calls.
+   - After navigation, use refs from the snapshot returned by that execute; optionally chain another execute for the next page (e.g. checkout form fill + place order).
+
+3. **Use individual tool calls** only when you must inspect the result before deciding the next action (e.g. one-off snapshot to find an element).
+
+4. **Do not** issue a long sequence of separate MCP calls (fill, fill, click, snapshot, click, snapshot…) when the same sequence can be expressed in one or two `execute` scripts.
+
+This reduces round-trips and token usage while keeping the same behavior.

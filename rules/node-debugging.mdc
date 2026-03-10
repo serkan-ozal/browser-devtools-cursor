@@ -1,5 +1,5 @@
 ---
-description: Use Node DevTools MCP for Node.js backend debugging: connect to process, then use tracepoints, logpoints, exceptionpoints, and run JS in process. Prefer MCP over CLI when this plugin is installed.
+description: Use Node DevTools MCP for Node.js backend debugging: connect to process, then use tracepoints, logpoints, exceptionpoints, watch expressions, and snapshots. Prefer MCP over CLI when this plugin is installed.
 alwaysApply: false
 globs: ["**/server*.{js,ts,mjs}", "**/app*.{js,ts,mjs}", "**/index.{js,ts,mjs}", "**/*.handler.{js,ts}"]
 ---
@@ -13,15 +13,15 @@ When the user wants to **debug a Node.js server or backend process** (e.g. API, 
 - User says the backend is failing, slow, or behaving unexpectedly.
 - User wants to inspect variables, call stacks, or logs at a specific line or on exceptions.
 - User wants **non-blocking** debugging (tracepoints, logpoints, exceptionpoints) without pausing the process with breakpoints.
-- User needs to connect to a process by **PID**, **process name**, **Docker container**, or **inspector port** (e.g. `--inspect=9229`).
+- User needs to connect to a process by **PID**, **process name**, **Docker container**, **inspector port** (e.g. `--inspect=9229`), or **WebSocket URL**.
 
 ## Workflow
 
-1. **Connect first** – Use the connect tool with the appropriate option (PID, process name, container ID/name, or inspector port). If the process is not already running with `--inspect`, the MCP server can attach via Inspector Protocol (e.g. SIGUSR1) where supported; otherwise the user may need to start the process with `--inspect` or `--inspect-brk`.
-2. **Set probes** – Add tracepoints (capture snapshot at line), logpoints (log expression at line), exceptionpoints (uncaught or all), and watch expressions as needed.
+1. **Connect** – Use **debug_connect** (PID, process name, Docker container ID/name, inspector port, or WebSocket URL). If the process is not already running with `--inspect`, the MCP server can attach via Inspector Protocol (e.g. SIGUSR1) where supported; otherwise the user may need to start with `--inspect` or `--inspect-brk`.
+2. **Set probes** – Use **debug_put-tracepoint**, **debug_put-logpoint**, **debug_put-exceptionpoint**, **debug_add-watch**; manage with **debug_list-probes**, **debug_remove-probe**, **debug_clear-probes**.
 3. **Trigger code** – Have the user or automation trigger the code path (e.g. send a request to the API).
-4. **Get snapshots** – Retrieve probe snapshots to inspect call stacks, local variables, and logged values.
-5. **Run in process** – Use the run tool to evaluate JavaScript in the connected Node process context when needed.
+4. **Get snapshots** – Use **debug_get-probe-snapshots** (optional types, probeId, fromSequence) to get call stacks and locals; **debug_clear-probe-snapshots** to clear. Use **debug_status** for probe counts; **debug_get-logs** for process console output.
+5. **Disconnect** – Use **debug_disconnect** when done to clean up. Use **debug_resolve-source-location** to resolve bundle locations to original source when needed.
 
 ## Good practices
 

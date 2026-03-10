@@ -1,29 +1,37 @@
 ---
-description: Use Browser DevTools MCP for browser automation, testing, a11y, performance, and in-browser debugging. Prefer MCP tools over CLI or custom scripts when this plugin is installed.
+description: Use Browser DevTools MCP for browser automation. ARIA snapshot first (not screenshot); snapshot before interaction; strongly prefer "execute" to batch multi-step flows (reduces tokens and round-trips). Prefer MCP over CLI when this plugin is installed.
 alwaysApply: false
 globs: []
 ---
 
 # Browser automation and testing
 
-When the user asks to **navigate**, **screenshot**, **test a web page**, **audit accessibility**, **measure performance**, **mock APIs**, **inspect React components**, **compare with Figma**, or **debug JavaScript in the browser**, use the **browser-devtools** MCP server provided by this plugin. Do not suggest running `browser-devtools-cli` in the shell unless the user explicitly wants CLI or the MCP server is unavailable.
+When the user asks to **navigate**, **screenshot**, **test a web page**, **audit accessibility**, **measure performance**, **mock APIs**, **inspect React components**, **compare with Figma**, or **debug in the browser**, use the **browser-devtools** MCP server. Do not suggest `browser-devtools-cli` unless the user explicitly wants CLI or MCP is unavailable.
 
-## Which tools to use
+## Critical workflow
 
-- **Navigation** – Go to URL, back, forward, reload.
-- **Content** – Screenshots (region/full-page, format), PDF, get HTML or text.
-- **Interaction** – Click, fill, select, hover, scroll, drag, press key; use refs (e.g. from ARIA snapshot) when the UI is dynamic.
-- **Accessibility (a11y)** – ARIA snapshot (compact, ref-based), AX tree snapshot (detailed roles/names/states). Use ARIA snapshot before interactions when you need stable element refs.
-- **Observability (o11y)** – Web Vitals, console messages, HTTP requests, trace ID get/set/new.
-- **Stub** – Intercept and mock HTTP responses.
-- **Run** – Execute JavaScript in browser or sandbox.
-- **React** – Get component for element, element for component.
-- **Figma** – Compare page with design (file key + node ID).
-- **Debug** – Tracepoints, logpoints, exceptionpoints, watch expressions; get/clear probe snapshots.
+1. **Understand page structure** – Use **ARIA snapshot first** (`a11y_take-aria-snapshot`), then AX tree if you need layout/occlusion. Do **not** take a screenshot just to “see the page”; use screenshot only for visual verification (design check, visual bug) when ARIA/AX are insufficient.
+2. **Before any interaction** (click, fill, hover, select, drag) – Take a snapshot to get **real selectors and refs** (e1, e2, …). Use refs, Playwright-style expressions (getByRole, getByLabel, getByText, etc.), or CSS. Do not guess selectors from screenshots. Refs are valid until the next snapshot or navigation.
+3. **Navigation returns ARIA snapshot with refs** – `navigation_go-to`, `navigation_go-back-or-forward`, and `navigation_reload` return an ARIA snapshot and refs by default; use them to plan the next steps without an extra snapshot call when appropriate.
+4. **Strongly prefer `execute` for multi-step flows** – For **token usage and speed**, use the **execute** tool for any flow that needs more than 2–3 tool calls in sequence. Batch inside one `execute` via `callTool(name, input, returnOutput?)` (e.g. fill → click → snapshot in a single call). Inside the execute script, **`page`** (Playwright Page) is available on the browser platform for `page.evaluate()`, `page.locator()`, etc. Do **not** issue long sequences of separate MCP calls (fill, fill, click, snapshot…) when the same sequence can be expressed in one or two `execute` scripts. Use individual tool calls only when you must inspect the result before deciding the next action.
+
+## Tool names (domain_tool-name)
+
+- **Navigation** – `navigation_go-to`, `navigation_go-back-or-forward`, `navigation_reload`
+- **Content** – `content_take-screenshot`, `content_get-as-html`, `content_get-as-text`, `content_save-as-pdf`
+- **Interaction** – `interaction_click`, `interaction_fill`, `interaction_select`, `interaction_hover`, `interaction_scroll`, `interaction_drag`, `interaction_press-key`, `interaction_resize-viewport`, `interaction_resize-window`
+- **Accessibility** – `a11y_take-aria-snapshot`, `a11y_take-ax-tree-snapshot`
+- **Observability** – `o11y_get-web-vitals`, `o11y_get-console-messages`, `o11y_get-http-requests`, `o11y_get-trace-id`, `o11y_set-trace-id`, `o11y_new-trace-id`
+- **Stub** – `stub_intercept-http-request`, `stub_mock-http-response`, `stub_list`, `stub_clear`
+- **Sync** – `sync_wait-for-network-idle`
+- **React** – `react_get-component-for-element`, `react_get-element-for-component`
+- **Figma** – `figma_compare-page-with-design`
+- **Debug** – `debug_put-tracepoint`, `debug_put-logpoint`, `debug_put-exceptionpoint`, `debug_add-watch`, `debug_list-probes`, `debug_get-probe-snapshots`, `debug_clear-probe-snapshots`, `debug_remove-probe`, `debug_clear-probes`, `debug_status`, `debug_resolve-source-location` (browser and/or Node depending on platform)
+- **Execute** – `execute` (batch tool calls via JavaScript and `callTool()`)
 
 ## Good practices
 
-1. **Stable selectors** – Prefer taking an ARIA (or AX) snapshot first and using the returned refs for click/fill/select instead of fragile CSS selectors when the page structure may change.
-2. **Timing** – After navigation or actions that trigger network/animations, use sync/wait tools (e.g. wait for network idle) or a short delay before taking screenshots or reading content.
-3. **Screenshots** – Use annotated screenshots (with ref labels) when you need to refer to specific elements in follow-up steps or in explanations to the user.
-4. **Errors** – If a tool fails (e.g. element not found), re-take a snapshot to get current refs or check the page state before retrying.
+- **Click that navigates** – Use `interaction_click` with `waitForNavigation: true` when the click opens a new page.
+- **Timing** – After actions that trigger network or animations, use `sync_wait-for-network-idle` or batch the next snapshot/screenshot in the same `execute` call.
+- **Screenshots** – Use annotated screenshots (ref labels) when you need to refer to elements in follow-up steps or in explanations. Do not set `includeBase64` unless the assistant cannot read the file path.
+- **Errors** – If a tool fails (e.g. element not found), re-take a snapshot to get current refs or check page state before retrying.

@@ -2,14 +2,14 @@
   "mcpServers": {
     "browser-devtools": {
       "command": "npx",
-      "args": ["-y", "browser-devtools-mcp"],
+      "args": ["-y", "browser-devtools-mcp@0.3.3"],
       "env": {
         "PLATFORM": "browser"
       }
     },
     "node-devtools": {
       "command": "npx",
-      "args": ["-y", "browser-devtools-mcp"],
+      "args": ["-y", "browser-devtools-mcp@0.3.3"],
       "env": {
         "PLATFORM": "node"
       }
