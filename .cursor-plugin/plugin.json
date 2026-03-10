@@ -1,6 +1,6 @@
 {
   "name": "browser-devtools",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Playwright-powered browser automation and Node.js backend debugging via MCP (same server as Browser DevTools MCP VS Code extension; browser-devtools-mcp 0.3.x). Browser: navigate (go-to, go-back-or-forward, reload; returns ARIA snapshot+refs), execute (batch tool calls via callTool; page available for page.evaluate), a11y, content, interaction, Web Vitals, stub, React/Figma, debug. Node: debug_connect/disconnect, tracepoints, logpoints, exceptionpoints, watch, snapshots, debug_status, debug_get-logs, debug_resolve-source-location.",
   "author": {
     "name": "Serkan Ozal",
